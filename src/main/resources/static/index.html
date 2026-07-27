@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Test</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7/bundles/stomp.umd.min.js"></script>
+</head>
+
+<body>
+
+<h2>Spring Boot WebSocket Test</h2>
+
+<button onclick="connect()">Connect</button>
+
+<br><br>
+
+<input type="text" id="sender" placeholder="Sender">
+<br><br>
+
+<input type="text" id="receiver" placeholder="Receiver">
+<br><br>
+
+<input type="text" id="message" placeholder="Message">
+
+<button onclick="sendMessage()">Send</button>
+
+<hr>
+
+<h3>Received Messages</h3>
+
+<div id="messages"></div>
+
+<script>
+
+let stompClient = null;
+
+function connect() {
+
+    const socket = new SockJS('/chat');
+
+    stompClient = new StompJs.Client({
+        webSocketFactory: () => socket,
+        onConnect: function () {
+            console.log("Connected!");
+            stompClient.subscribe("/user/queue/messages", function (msg) {
+
+                const body = JSON.parse(msg.body);
+
+                document.getElementById("messages").innerHTML +=
+                    "<p><b>" +
+                    body.sender +
+                    "</b>: " +
+                    body.content +
+                    "</p>";
+            });
+
+        }
+    });
+
+    stompClient.activate();
+}
+
+function sendMessage() {
+
+    stompClient.publish({
+
+        destination: "/app/send",
+
+        body: JSON.stringify({
+
+            sender: document.getElementById("sender").value,
+            receiver: document.getElementById("receiver").value,
+            content: document.getElementById("message").value
+
+        })
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>
