@@ -2,11 +2,11 @@ package Chat.Application.service;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import Chat.Application.dto.ConversationResponse;
 import org.springframework.stereotype.Service;
 import Chat.Application.entity.User;
 import Chat.Application.dto.LoginRequest;
 import Chat.Application.dto.RegisterRequest;
-import Chat.Application.dto.UserSearchResponse;
 import Chat.Application.repository.UserRepository;
 
 @Service
@@ -45,13 +45,13 @@ public class UserService {
         return user.get();
     }
 
-    public List<UserSearchResponse> searchUsers(String username){
+    public List<ConversationResponse> searchUsers(String username){
         List<User> users=userRepository.findByUsernameContainingIgnoreCase(username);
-        List<UserSearchResponse> response = new ArrayList<>();
+        List<ConversationResponse> response = new ArrayList<>();
         for(User user : users){
             String userName=user.getUsername();
             String displayName=user.getDisplayName();
-            response.add(new UserSearchResponse(userName,displayName));
+            response.add(new ConversationResponse(userName,displayName));
         }
 
         return response;
