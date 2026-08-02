@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSearchResponse {
+public class ConversationResponse {
     private String username;
     private String displayName;
 }

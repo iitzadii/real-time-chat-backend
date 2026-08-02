@@ -17,7 +17,19 @@ public interface MessageRepository extends JpaRepository<Message,UUID>{
     (m.sender = :user1 AND m.receiver = :user2)
     OR
     (m.sender = :user2 AND m.receiver = :user1)
-    ORDER BY m.dateTime ASC
+    ORDER BY m.timestamp ASC
     """)
     List<Message> findConversation(@Param("user1") String user1, @Param("user2") String user2);
+
+    @Query("""
+    SELECT DISTINCT
+    CASE
+        WHEN m.sender = :username THEN m.receiver
+        ELSE m.sender
+    END
+    FROM Message m
+    WHERE m.sender = :username
+       OR m.receiver = :username
+    """)
+    List<String> findConversationUsers(@Param("username") String username);
 }

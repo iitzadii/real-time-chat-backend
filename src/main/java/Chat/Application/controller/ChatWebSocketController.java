@@ -19,23 +19,16 @@ public class ChatWebSocketController {
     private final MessageService messageService;
     @MessageMapping("/send")
     public void send(MessageRequest message, Principal principal) {
-
         System.out.println("Reached Controller");
-
         message.setSender(principal.getName());
-
         System.out.println(message);
-
         messageService.send(message);
-
         System.out.println("Saved to DB");
-
         messagingTemplate.convertAndSendToUser(
                 message.getReceiver(),
                 "/queue/messages",
                 message
         );
-
         System.out.println("Sent to Broker");
     }
 }
