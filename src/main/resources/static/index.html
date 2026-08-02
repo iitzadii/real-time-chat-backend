@@ -1,6 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>WebSocket Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7/bundles/stomp.umd.min.js"></script>
+</head>
+<body>
+
+<h2>JWT Chat Test</h2>
+
+<input id="token" type="text" placeholder="Paste JWT here" size="100">
+<br><br>
+
+<button onclick="connect()">Connect</button>
+<button onclick="subscribe()">Subscribe</button>
+
+<hr>
+
+<input id="receiver" placeholder="Receiver">
+<input id="message" placeholder="Message">
+<button onclick="sendMessage()">Send</button>
+
+<pre id="messages"></pre>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7/bundles/stomp.umd.min.js"></script>
+
+<script>
+
+    let stompClient = null;
+
+    function connect() {
+
+        const token = document.getElementById("token").value;
+
+        const socket = new SockJS("http://localhost:8080/chat");
+
+        stompClient = new StompJs.Client({
+
+            webSocketFactory: () => socket,
+
+            connectHeaders: {
+                Authorization: "Bearer " + token
+            },
+
+            debug: console.log,
+
+            onConnect: function(frame) {
+
+                console.log(frame);
+
+                alert("Connected!");
+
+            },
+
+            onStompError: function(frame) {
+
+                console.error(frame);
+
+            }
+
+        });
+
+        stompClient.activate();
+    }
+
+    function subscribe() {
+
+        stompClient.subscribe("/user/queue/messages", function(message) {
+
+            document.getElementById("messages").innerHTML +=
+                message.body + "\n";
+
+        });
+
+    }
+
+    function sendMessage() {
+
+        const receiver = document.getElementById("receiver").value;
+        const content = document.getElementById("message").value;
+
+        stompClient.publish({
+
+            destination: "/app/send",
+
+            body: JSON.stringify({
+
+                receiver: receiver,
+                content: content
+
+            })
+
+        });
+
+    }
+
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
     <meta charset="UTF-8">
     <title>Chat Test</title>
 

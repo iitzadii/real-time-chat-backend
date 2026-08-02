@@ -39,20 +39,12 @@ public class  AuthController{
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-
         try {
-
             User user = userService.login(request);
-
             String token = jwtService.generateToken(user.getUsername());
-
             return ResponseEntity.ok(Map.of("token", token));
-
         } catch (RuntimeException e) {
-
             return ResponseEntity.status(409).body(e.getMessage());
-
         }
     }
-    
 }

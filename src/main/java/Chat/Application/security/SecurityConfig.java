@@ -1,5 +1,4 @@
-package Chat.Application.config;
-
+package Chat.Application.security;
 import Chat.Application.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,13 +13,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     private final JwtAuthenticationFilter jwtFilter;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
-
         http
 
                 .csrf(csrf->csrf.disable())
@@ -32,12 +28,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth->auth
 
                         .requestMatchers(
-                                "/auth/register",
-                                "/auth/login"
+                                "/auth/**", "/chat/**"
                         ).permitAll()
-
                         .anyRequest().authenticated()
-
                 )
 
                 .addFilterBefore(
@@ -52,7 +45,6 @@ public class SecurityConfig {
     AuthenticationManager authenticationManager(
             AuthenticationConfiguration config)
             throws Exception {
-
         return config.getAuthenticationManager();
     }
 }

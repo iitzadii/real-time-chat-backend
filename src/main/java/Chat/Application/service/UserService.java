@@ -30,12 +30,10 @@ public class UserService {
     }
 
     public User login(LoginRequest req) {
-
         Optional<User> user = userRepository.findByUsernameOrEmail(
                 req.getIdentifier(),
                 req.getIdentifier()
         );
-
         if (user.isEmpty()) {
             throw new RuntimeException("User doesn't exist");
         }

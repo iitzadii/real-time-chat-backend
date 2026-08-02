@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MessageRequest {
+    private String token;
     private String sender;
     private String receiver;
     private String content;
